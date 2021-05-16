@@ -1,0 +1,27 @@
+nav{
+    background: rgb(62, 95, 138);
+    height: 80px;
+    color:#fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+ul{
+    margin: 15px;
+    list-style: none;
+}
+li{
+    display: flex;
+    padding: 15px;
+}
+a{
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+}
+a:hover{
+    color: rgb(79, 141, 223);
+}

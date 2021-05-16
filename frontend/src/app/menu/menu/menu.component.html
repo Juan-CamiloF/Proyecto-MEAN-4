@@ -1,0 +1,30 @@
+<nav *ngIf="!this.usuario.inicio()">
+  <p>Desarrollado por: Juan-CamiloF</p>
+  <ul>
+    <li>
+      <a routerLink="inicio">
+        <span class="material-icons">
+          home
+        </span>
+        Scrum
+      </a>
+      <a routerLink="iniciarSesion">
+        <span class="material-icons">
+          login
+        </span>
+        Iniciar Sesión
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav *ngIf="this.usuario.inicio()">
+  <p>SCRUM</p>
+  <ul>
+    <li>
+      <a routerLink="iniciarSesion" (click)="this.usuario.cerrar()">
+        <span class="material-icons">
+          logout
+        </span>Cerrar Sesión</a>
+    </li>
+  </ul>
+</nav>

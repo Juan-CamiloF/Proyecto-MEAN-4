@@ -1,0 +1,200 @@
+<mat-tab-group *ngIf="scrum">
+    <mat-tab label="Lista de proyectos">
+        <mat-accordion>
+            <div *ngIf="listaProyecto.length">
+                <div *ngFor="let proyecto of listaProyecto">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title> Nombre: {{ proyecto.nombre }} </mat-panel-title>
+                            <mat-panel-title> Estado: {{ proyecto.estado }} </mat-panel-title>
+                            <mat-panel-description class="fechas">
+                                Fecha de Inicio:
+                                {{ proyecto.fechaDeInicio | date: "dd/MM/yyyy" }}
+                                <mat-icon>date_range</mat-icon>
+                                Fecha de Fin: {{ proyecto.fechaDeFin | date: "dd/MM/yyyy" }}
+                                <mat-icon>event</mat-icon>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div class="contenedor">
+                            <div>
+                                <button class="btn" (click)="abrirModal(proyecto._id)">
+                                    Ver equipo
+                                </button>
+                            </div>
+                            <form (ngSubmit)="agregarUsuario(proyecto._id)" [formGroup]="formEquipo">
+                                <p>Agregar un usuario al equipo</p>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Usuario</mat-label>
+                                    <mat-select formControlName="usuario"
+                                        [ngClass]="{ 'is-invalid': enviarE && e.usuario.errors }">
+                                        <mat-option>--Usuarios--</mat-option>
+                                        <mat-option *ngFor="let usuario of listaUsuarios" [value]="usuario.usuario">
+                                            {{ usuario.nombres }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="e.usuario.errors">Seleccione un usuario</mat-error>
+                                </mat-form-field>
+                                <input type="submit" value="Agregar" class="btn" />
+                            </form>
+                            <div>
+                                <button class="btn" (click)="abrirModalSprint(proyecto._id)">
+                                    Ver Sprint's
+                                </button>
+                            </div>
+                            <form (ngSubmit)="agregarSprint(proyecto._id)" [formGroup]="formSprint">
+                                <p>Agregar un usuario al equipo</p>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Número de sprint</mat-label>
+                                    <input matInput formControlName="sprint"
+                                        [ngClass]="{ 'is-invalid': enviarS && s.sprint.errors }" />
+                                    <mat-error *ngIf="s.sprint.errors">Campo requerido</mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Nombre del sprint</mat-label>
+                                    <input matInput formControlName="nombre"
+                                        [ngClass]="{ 'is-invalid': enviarS && s.nombre.errors }" />
+                                    <mat-error *ngIf="s.nombre.errors">Campo requerido</mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Duración del Sprint</mat-label>
+                                    <input matInput formControlName="duracion"
+                                        [ngClass]="{ 'is-invalid': enviarS && s.duracion.errors }" />
+                                    <mat-error *ngIf="s.duracion.errors">Campo requerido</mat-error>
+                                </mat-form-field>
+                                <input type="submit" value="Agregar" class="btn" />
+                            </form>
+                        </div>
+                    </mat-expansion-panel>
+
+                    <div class="modal invisible" id="modal">
+                        <div class="equipo">
+                            Lista de integrantes
+                            <div *ngIf="listaEquipo.length">
+                                <div *ngFor="let equipo of listaEquipo" class="elemento">
+                                    <p>Nombre: {{ equipo.nombres }} {{ equipo.apellidos }}</p>
+                                    <p>({{ equipo.rol }})</p>
+                                    <span (click)="eliminarEquipo(equipo)"
+                                        class="material-icons icon">delete_forever</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" (click)="cerrarModal()">Cerrar</button>
+                    </div>
+                    <div class="modalSprint invisible" id="modalSprint">
+                        <div class="sprint">
+                            Sprint
+                            <div *ngIf="listaSprint.length">
+                                <div *ngFor="let sprint of listaSprint" class="elemento">
+                                    <p>Número: {{ sprint.sprint }}</p>
+                                    <p>Nombre: {{ sprint.nombre }}</p>
+                                    <p>Duracion: {{ sprint.duracion }}</p>
+                                    <p>Estado: {{ sprint.estado }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" (click)="cerrarModalSprint()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </mat-accordion>
+    </mat-tab>
+    <mat-tab label="Crear un proyecto">
+        <div class="form">
+            <h2>Crear un proyecto</h2>
+            <form (ngSubmit)="crearProyecto()" [formGroup]="formulario">
+                <mat-form-field appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput formControlName="nombre" [ngClass]="{ 'is-invalid': enviar && f.nombre.errors }" />
+                    <div *ngIf="enviar && f.nombre.errors">
+                        <div *ngIf="f.nombre.errors.required">El campo es requerido</div>
+                    </div>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha de Inicio</mat-label>
+                    <input matInput [matDatepicker]="fechaInicio" formControlName="fechaDeInicio"
+                        [ngClass]="{ 'is-invalid': enviar && f.fechaDeInicio.errors }" />
+                    <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaInicio></mat-datepicker>
+                    <div *ngIf="enviar && f.fechaDeInicio.errors">
+                        <div *ngIf="f.fechaDeInicio.errors.required">
+                            El campo es requerido
+                        </div>
+                    </div>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha de Fin</mat-label>
+                    <input matInput [matDatepicker]="fechaFin" formControlName="fechaDeFin"
+                        [ngClass]="{ 'is-invalid': enviar && f.fechaDeFin.errors }" />
+                    <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaFin></mat-datepicker>
+                    <div *ngIf="enviar && f.fechaDeFin.errors">
+                        <div *ngIf="f.fechaDeFin.errors.required">
+                            El campo es requerido
+                        </div>
+                    </div>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Estado</mat-label>
+                    <input matInput formControlName="estado" [ngClass]="{ 'is-invalid': enviar && f.estado.errors }" />
+                    <div *ngIf="enviar && f.estado.errors">
+                        <div *ngIf="f.estado.errors.required">El campo es requerido</div>
+                    </div>
+                </mat-form-field>
+                <input type="submit" class="btn" value="Crear" />
+            </form>
+        </div>
+    </mat-tab>
+    <mat-tab label="Sprint's">
+        <div class="contenedorSprint">
+            Listar los Sprint por proyecto
+            <form (ngSubmit)="proyecto()" [formGroup]="formSprintProyecto">
+                <mat-form-field appearance="fill">
+                    <mat-label>Proyectos</mat-label>
+                    <mat-select formControlName="idProyecto"
+                        [ngClass]="{ 'is-invalid': enviarP && p.idProyecto.errors }">
+                        <mat-option *ngFor="let proyecto of listaProyecto" [value]="proyecto._id">
+                            {{ proyecto.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="p.idProyecto.errors">Seleccione un proyecto</mat-error>
+                </mat-form-field>
+                <input type="submit" class="btn" value="Mostrar" />
+            </form>
+        </div>
+        Lista de Sprint del proyecto
+        <mat-accordion>
+            <div *ngIf="listaSprintsProyecto.length">
+                <div *ngFor="let sprint of listaSprintsProyecto">
+                    <mat-expansion-panel (click)="listarTareas(sprint._id)">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Número del Sprint: {{ sprint.sprint }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Nombre: {{ sprint.nombre }}
+                            </mat-panel-description>
+                            <mat-panel-description>
+                                Duración: {{ sprint.duracion }}
+                            </mat-panel-description>
+                            <mat-panel-description>
+                                Estado: {{ sprint.estado }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                            Tareas
+                            <ol *ngIf="listaTareasSprint.length">
+                                <li *ngFor="let tarea of listaTareasSprint">
+                                    <p>Nombre: {{ tarea.nombre }}</p>
+                                    <p>Prioridad: {{tarea.prioridad}}</p>
+                                    <p>Estado: {{tarea.estado}} </p>
+                                    <p>Descripción: {{tarea.descripcion}} </p>
+                                </li>
+                            </ol>
+                    </mat-expansion-panel>
+                </div>
+            </div>
+        </mat-accordion>
+        <div *ngIf="!listaSprintsProyecto.length">
+            <h4>No hay Sprint's para el proyecto por el momento</h4>
+        </div>
+    </mat-tab>
+</mat-tab-group>

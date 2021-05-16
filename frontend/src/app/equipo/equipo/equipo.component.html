@@ -1,0 +1,110 @@
+<mat-tab-group *ngIf="usuarioEquipo">
+    <mat-tab label="Proyectos">
+        <mat-accordion>
+            <div *ngIf="listaProyectos.length">
+                <div *ngFor="let proyecto of listaProyectos">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Nombre: {{ proyecto.nombre }} <br />
+                                Estado: {{ proyecto.estado }}
+                            </mat-panel-title>
+                            <mat-panel-description class="fechas">
+                                Fecha de Inicio:
+                                {{ proyecto.fechaDeInicio | date: "dd/MM/yyyy" }}
+                                <mat-icon>date_range</mat-icon>
+                                Fecha de Fin: {{ proyecto.fechaDeFin | date: "dd/MM/yyyy" }}
+                                <mat-icon>event</mat-icon>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <h4>Scrum Master: {{ proyecto.creador }}</h4>
+                        <button class="btn" (click)="abrirModalEquipo(proyecto._id)">
+                            Ver equipo
+                        </button>
+                    </mat-expansion-panel>
+                    <div class="modalEquipo Invisible" id="modalEquipo">
+                        <div class="equipo">
+                            Lista de integrantes
+                            <div *ngIf="listaEquipo.length">
+                                <div *ngFor="let equipo of listaEquipo" class="textosEquipo">
+                                    <p>Nombre: {{ equipo.nombres }} {{ equipo.apellidos }}</p>
+                                    <p>({{ equipo.rol }})</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" (click)="cerrarModalEquipo()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </mat-accordion>
+    </mat-tab>
+    <mat-tab label="Second"> Content 2 </mat-tab>
+    <mat-tab label="Crear actividad">
+        <div class="form">
+            <h3>Escoger un proyecto</h3>
+            <form (ngSubmit)="sprints()" [formGroup]="proyecto">
+                <mat-form-field appearance="fill">
+                    <mat-label>Escoger el proyecto</mat-label>
+                    <mat-select formControlName="idProyecto"
+                        [ngClass]="{'is-invalid':enviarProyecto && p.idProyecto.errors}">
+                        <mat-option *ngFor="let proyectos of listaProyectos" [value]="proyectos._id">
+                            {{ proyectos.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="p.idProyecto.errors">Seleccione un proyecto</mat-error>
+                </mat-form-field>
+                <input class="btn" type="submit" value="Aceptar">
+            </form>
+        </div>
+        <div class="form" *ngIf="listaSprint.length">
+            <div class="form">
+                <h3>Crear tarea</h3>
+                <form (ngSubmit)="crearTarea()" [formGroup]="formulario">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Escoger un sprint</mat-label>
+                        <mat-select formControlName="idSprint"
+                            [ngClass]="{'is-invalid':enviarTarea && f.idSprint.errors}">
+                            <mat-option *ngFor="let sprints of listaSprint" [value]="sprints._id">
+                                {{ sprints.nombre }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="f.idSprint.errors">Seleccione un proyecto</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nombre de la tarea</mat-label>
+                        <input matInput formGroupName="nombre"
+                            [ngClass]="{'is-invalid':enviarTarea && f.nombre.errors}">
+                        <div *ngIf="enviarTarea && f.nombre.errors">
+                            <div *ngIf="f.nombre.errors.required">
+                                El campo es requerido
+                            </div>
+                        </div>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Prioridad</mat-label>
+                        <mat-select formControlName="prioridad"
+                            [ngClass]="{'is-invalid':enviarTarea && f.prioridad.errors}">
+                            <mat-option value="Alta">Alta</mat-option>
+                            <mat-option value="Media">Media</mat-option>
+                            <mat-option value="Baja">Baja</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="f.prioridad.errors">Seleccione una prioridad</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Descripción</mat-label>
+                        <textarea matInput formGroupName="descripcion"
+                            [ngClass]="{'is-invalid':enviarTarea && f.descripcion.errors}">
+                        </textarea>
+                        <div *ngIf="enviarTarea && f.descripcion.errors">
+                            <div *ngIf="f.descripcion.errors.required">
+                                El campo es requerido
+                            </div>
+                        </div>
+                    </mat-form-field>
+
+                    <input type="submit" value="Crear" class="btn">
+                </form>
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>
