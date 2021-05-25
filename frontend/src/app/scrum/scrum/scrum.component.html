@@ -21,7 +21,7 @@
                                     Ver equipo
                                 </button>
                             </div>
-                            <form (ngSubmit)="agregarUsuario(proyecto._id)" [formGroup]="formEquipo">
+                            <form (ngSubmit)="agregarUsuario(proyecto._id,formularioEquipo)" [formGroup]="formEquipo" #formularioEquipo="ngForm">
                                 <p>Agregar un usuario al equipo</p>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Usuario</mat-label>
@@ -34,14 +34,17 @@
                                     </mat-select>
                                     <mat-error *ngIf="e.usuario.errors">Seleccione un usuario</mat-error>
                                 </mat-form-field>
-                                <input type="submit" value="Agregar" class="btn" />
+                                <div class="botones">
+                                    <input type="submit" value="Agregar" class="btn" />
+                                    <input type="reset" value="Cancelar" class="btn" />
+                                </div>
                             </form>
                             <div>
                                 <button class="btn" (click)="abrirModalSprint(proyecto._id)">
                                     Ver Sprint's
                                 </button>
                             </div>
-                            <form (ngSubmit)="agregarSprint(proyecto._id)" [formGroup]="formSprint">
+                            <form (ngSubmit)="agregarSprint(proyecto._id,formularioSprint)" [formGroup]="formSprint" #formularioSprint="ngForm">
                                 <p>Agregar un usuario al equipo</p>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Número de sprint</mat-label>
@@ -61,7 +64,10 @@
                                         [ngClass]="{ 'is-invalid': enviarS && s.duracion.errors }" />
                                     <mat-error *ngIf="s.duracion.errors">Campo requerido</mat-error>
                                 </mat-form-field>
-                                <input type="submit" value="Agregar" class="btn" />
+                               <div class="botones">
+                                    <input type="submit" value="Agregar" class="btn" />
+                                    <input type="reset" value="Cancelar" class="btn" />
+                               </div>
                             </form>
                         </div>
                     </mat-expansion-panel>
@@ -101,53 +107,50 @@
     <mat-tab label="Crear un proyecto">
         <div class="form">
             <h2>Crear un proyecto</h2>
-            <form (ngSubmit)="crearProyecto()" [formGroup]="formulario">
+            <form (ngSubmit)="crearProyecto(formularioProyecto)" [formGroup]="formulario" #formularioProyecto="ngForm">
                 <mat-form-field appearance="fill">
                     <mat-label>Nombre</mat-label>
-                    <input matInput formControlName="nombre" [ngClass]="{ 'is-invalid': enviar && f.nombre.errors }" />
-                    <div *ngIf="enviar && f.nombre.errors">
-                        <div *ngIf="f.nombre.errors.required">El campo es requerido</div>
-                    </div>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="f.nombre.errors">
+                        Campo requerido
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Fecha de Inicio</mat-label>
-                    <input matInput [matDatepicker]="fechaInicio" formControlName="fechaDeInicio"
-                        [ngClass]="{ 'is-invalid': enviar && f.fechaDeInicio.errors }" />
+                    <input matInput [matDatepicker]="fechaInicio" formControlName="fechaDeInicio" placeholder="DD/MM/YYYY"/>
                     <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
                     <mat-datepicker #fechaInicio></mat-datepicker>
-                    <div *ngIf="enviar && f.fechaDeInicio.errors">
-                        <div *ngIf="f.fechaDeInicio.errors.required">
-                            El campo es requerido
-                        </div>
-                    </div>
+                    <mat-error *ngIf="f.fechaDeInicio.errors">
+                        Campo requerido
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Fecha de Fin</mat-label>
-                    <input matInput [matDatepicker]="fechaFin" formControlName="fechaDeFin"
-                        [ngClass]="{ 'is-invalid': enviar && f.fechaDeFin.errors }" />
+                    <input matInput [matDatepicker]="fechaFin" formControlName="fechaDeFin" placeholder="DD/MM/YYYY" />
                     <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
                     <mat-datepicker #fechaFin></mat-datepicker>
-                    <div *ngIf="enviar && f.fechaDeFin.errors">
-                        <div *ngIf="f.fechaDeFin.errors.required">
-                            El campo es requerido
-                        </div>
-                    </div>
+                    <mat-error *ngIf="f.fechaDeFin.errors">
+                        Campo requerido
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Estado</mat-label>
                     <input matInput formControlName="estado" [ngClass]="{ 'is-invalid': enviar && f.estado.errors }" />
-                    <div *ngIf="enviar && f.estado.errors">
-                        <div *ngIf="f.estado.errors.required">El campo es requerido</div>
-                    </div>
+                    <mat-error *ngIf="f.estado.errors">
+                        Campo requerido
+                    </mat-error>
                 </mat-form-field>
-                <input type="submit" class="btn" value="Crear" />
+              <div class="botones">
+                    <input type="submit" class="btn" value="Crear" />
+                    <input type="reset" class="btn" value="Cancelar" />
+              </div>
             </form>
         </div>
     </mat-tab>
     <mat-tab label="Sprint's">
         <div class="contenedorSprint">
             Listar los Sprint por proyecto
-            <form (ngSubmit)="proyecto()" [formGroup]="formSprintProyecto">
+            <form (ngSubmit)="proyecto()" [formGroup]="formSprintProyecto" >
                 <mat-form-field appearance="fill">
                     <mat-label>Proyectos</mat-label>
                     <mat-select formControlName="idProyecto"
@@ -181,14 +184,23 @@
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                             Tareas
+                            <mat-tree>
+                                <mat-nested-tree-node>
+                                  parent node
+                                  <mat-nested-tree-node> -- child node1 </mat-nested-tree-node>
+                                  <mat-nested-tree-node> -- child node2 </mat-nested-tree-node>
+                                </mat-nested-tree-node>
+                             </mat-tree>
                             <ol *ngIf="listaTareasSprint.length">
                                 <li *ngFor="let tarea of listaTareasSprint">
+                                    <p>Encargado: {{tarea.encargado}}</p>
                                     <p>Nombre: {{ tarea.nombre }}</p>
                                     <p>Prioridad: {{tarea.prioridad}}</p>
                                     <p>Estado: {{tarea.estado}} </p>
                                     <p>Descripción: {{tarea.descripcion}} </p>
                                 </li>
                             </ol>
+                            
                     </mat-expansion-panel>
                 </div>
             </div>
@@ -198,3 +210,6 @@
         </div>
     </mat-tab>
 </mat-tab-group>
+<div *ngIf="cargando" class="cargando">
+    <mat-spinner></mat-spinner>
+</div>

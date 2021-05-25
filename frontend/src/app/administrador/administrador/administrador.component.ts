@@ -1,17 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { AdministradorService } from '../../servicios/administrador.service';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MustMatch } from './mustfile';
 
 import Swal from 'sweetalert2';
 import { EquipoService } from 'src/app/servicios/equipo.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-administrador',
   templateUrl: './administrador.component.html',
   styleUrls: ['./administrador.component.css'],
 })
 export class AdministradorComponent implements OnInit {
+  //Declaraciones
   hide = true;
   panelOpenState = false;
   listaUsuarios: any = [];
@@ -21,24 +23,29 @@ export class AdministradorComponent implements OnInit {
   formularioActualizar!: FormGroup;
   enviar = false;
   enviarA = false;
+  cargando = true;
   roles: any[] = [
     { value: 'Administrador', viewValue: 'Administrador' },
     { value: 'Scrum Master', viewValue: 'Scrum Master' },
     { value: 'Desarrollador', viewValue: 'Desarrollador' },
     { value: 'Lider Técnico', viewValue: 'Lider Técnico' },
   ];
+  administrador = false;
   constructor(
     private formBuilder: FormBuilder,
     private usuario: UsuarioService,
     private admin: AdministradorService,
-    private equipo: EquipoService
+    private equipo: EquipoService,
+    private router: Router
   ) {}
-  administrador = false;
   ngOnInit(): void {
     this.usuario.informacion().subscribe(
       (res) => {
         if (res.rol == 'Administrador') {
           this.administrador = true;
+          this.cargando = false;
+        }else{
+          this.router.navigate(['/Oops']);
         }
       },
       (err) => console.log(err.error)
@@ -93,22 +100,17 @@ export class AdministradorComponent implements OnInit {
   get fA() {
     return this.formularioActualizar.controls;
   }
-  registrar() {
+  registrar(formularioRegistro: any) {
     this.enviar = true;
     if (this.formulario.invalid) return;
     this.admin.agregarUsuarios(this.formulario.value).subscribe(
       (res) => {
+        formularioRegistro.resetForm();
         Swal.fire(
           'Registro exitoso!',
           'Usuario agregado correctamente.',
           'success'
-        ).then((result) => {
-          this.formulario.reset();
-          this.formulario.markAsPristine();
-          this.formulario.markAsUntouched();
-          this.formulario.updateValueAndValidity();
-          this.enviar = false;
-        });
+        ).then((result) => {});
         this.admin.listarUsuarios().subscribe(
           (res) => {
             this.listaUsuarios = res;
@@ -123,9 +125,6 @@ export class AdministradorComponent implements OnInit {
       }
     );
   }
-  resetear(){
-    this.enviar = false;
-  }
   borrar(usuario: any) {
     Swal.fire({
       title: '¿Está seguro de borra a este usuario?',
@@ -137,15 +136,16 @@ export class AdministradorComponent implements OnInit {
       if (result.isConfirmed) {
         this.admin.eliminarUsuario(usuario).subscribe(
           (res) => {
-            Swal.fire(
-              'Usuario Eliminado',
-              'Usuario eliminado correctamente.',
-              'success'
-            );
             const i = this.listaUsuarios.indexOf(usuario);
-            if (i != -1) {
+            if (i >= 0) {
               this.listaUsuarios.splice(i, 1);
             }
+            Swal.fire(
+              'Usuario Eliminado',
+              `${res}`,
+              'success'
+            );
+            console.log(res)
           },
           (err) => {
             Swal.fire('Hubo un problema', `${err.error}`, 'error');
@@ -185,8 +185,13 @@ export class AdministradorComponent implements OnInit {
           'Usuario actualizado correctamente.',
           'success'
         );
-        let indice = this.listaUsuarios.indexOf(this.usuarioTemp);
-        this.listaUsuarios[indice] = this.formularioActualizar.value;
+        this.admin.listarUsuarios().subscribe(
+            (res)=>{
+              this.listaUsuarios = res;
+            },(err)=>{
+              Swal.fire('Hubo un problema',`${err.error}`,'error');
+            }
+          )
         document.getElementById('form')!.className = 'formulario Invisible';
       },
       (err) => {

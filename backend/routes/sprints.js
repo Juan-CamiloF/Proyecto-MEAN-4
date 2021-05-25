@@ -5,8 +5,8 @@ const router = express.Router();
 const { Usuario } = require("../models/usuario");
 const { Sprint } = require("../models/sprints");
 const { Proyecto } = require("../models/proyectos");
-const auth = require("../middleware/auth");
 const { Actividad } = require("../models/actividades");
+const auth = require("../middleware/auth");
 //Creación de rutas
 //Crear Sprint
 router.post("/crear", auth, async (request, response) => {
@@ -37,6 +37,14 @@ router.get("/listar/:idProyecto", auth, async (request, response) => {
   const sprints = await Sprint.find({ idProyecto: request.params.idProyecto });
   response.status(200).send(sprints);
 });
+//Mostrar tareas del sprint
+router.get("/listarTareas/:idSprint",auth,async(request,response)=>{
+  //Si el usuario existe
+  const usuario = await Usuario.findById(request.usuario._id);
+  if(!usuario)  return response.status(400).send(200);
+  const tareas = await Actividad.find({idSprint:request.params.idSprint});
+  response.status(200).send(tareas);
+})
 //Actualizar sprints
 router.put("/actualizar", auth, async (request, response) => {
   //Si el usuario existe
@@ -66,14 +74,8 @@ router.delete("/borrar/:_id", auth, async (request, response) => {
   if (!usuario) return response.status(400).send("El usuario no existe");
   const sprint = await Sprint.findByIdAndDelete(request.params._id);
   if (!sprint) return response.status(400).send("El Sprint no existe");
+  // const actividades = await Actividad.
   response.status(200).send({ message: "Sprint Eliminado" });
 });
-//Mostrar tareas del sprint
-router.get("/listarTareas/:idSprint",auth,async(request,response)=>{
-  //Si el usuario existe
-  const usuario = await Usuario.findById(request.usuario._id);
-  if(!usuario)  return response.status(400).send(200);
-  const tareas = await Actividad.find({idSprint:request.params.idSprint});
-  response.status(200).send(tareas);
-})
+
 module.exports = router;

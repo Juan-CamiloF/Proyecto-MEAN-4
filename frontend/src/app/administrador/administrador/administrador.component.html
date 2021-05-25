@@ -45,85 +45,68 @@
                             <h2>Actualizar los datos</h2>
                             <mat-form-field appearance="fill">
                                 <mat-label>Nombres</mat-label>
-                                <input matInput formControlName="nombres"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.nombres.errors }" />
-                                <div *ngIf="enviarA && fA.nombres.errors">
-                                    <div *ngIf="fA.nombres.errors.required">
-                                        Usuario requerido
-                                    </div>
-                                </div>
+                                <input matInput formControlName="nombres" />
+                                <mat-error *ngIf="fA.nombres.errors">
+                                    Campo requerido
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Apellidos</mat-label>
-                                <input matInput formControlName="apellidos"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.apellidos.errors }" />
-                                <div *ngIf="enviarA && fA.apellidos.errors">
-                                    <div *ngIf="fA.apellidos.errors.required">
-                                        Usuario requerido
-                                    </div>
-                                </div>
+                                <input matInput formControlName="apellidos" />
+                                <mat-error *ngIf="fA.apellidos.errors">
+                                    Campo requerido
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Cedula</mat-label>
-                                <input matInput formControlName="cedula"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.cedula.errors }" />
-                                <div *ngIf="enviarA && fA.cedula.errors">
-                                    <div *ngIf="fA.cedula.errors.required">Usuario requerido</div>
-                                </div>
+                                <input matInput formControlName="cedula" />
+                                <mat-error *ngIf="fA.cedula.errors">
+                                    Campo requerido
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Rol</mat-label>
-                                <mat-select formControlName="rol"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.rol.errors }">
+                                <mat-select formControlName="rol">
                                     <mat-option *ngFor="let rol of roles" [value]="rol.value">
                                         {{ rol.viewValue }}
                                     </mat-option>
                                 </mat-select>
-                                <div *ngIf="enviarA && fA.rol.errors">
-                                    <div *ngIf="fA.rol.errors.required">El rol es necesario</div>
-                                </div>
+                                <mat-error *ngIf="fA.rol.errors">
+                                    Campo requerido
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Usuario</mat-label>
-                                <input matInput formControlName="usuario"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.usuario.errors }" />
-                                <div *ngIf="enviarA && fA.usuario.errors">
-                                    <div *ngIf="fA.usuario.errors.required">
-                                        Usuario requerido
-                                    </div>
-                                </div>
+                                <input matInput formControlName="usuario" />
+                                <mat-error *ngIf="fA.usuario.errors">
+                                    Campo requerido
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Contraseña</mat-label>
-                                <input formControlName="contrasenia" matInput [type]="hide ? 'password' : 'text'"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.contrasenia.errors }" />
+                                <input formControlName="contrasenia" matInput [type]="hide ? 'password' : 'text'" />
                                 <button class="mostrar" mat-icon-button matSuffix (click)="hide = !hide"
                                     [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                                     <mat-icon>{{
                                         hide ? "visibility_off" : "visibility"
                                         }}</mat-icon>
                                 </button>
-                                <div *ngIf="enviarA && fA.contrasenia.errors">
-                                    <div *ngIf="fA.contrasenia.errors.required">
-                                        Contraseña requerida
-                                    </div>
-                                    <div *ngIf="fA.contrasenia.errors.minLength">
-                                        La contraseña es muy corta
-                                    </div>
-                                </div>
+                                <mat-error *ngIf="fA.contrasenia.hasError('required')">
+                                    Campo requerido
+                                </mat-error>
+                                <mat-error *ngIf="fA.contrasenia.hasError('minlength')">
+                                    Minimo 5 caracteres
+                                </mat-error>
                             </mat-form-field>
                             <mat-form-field appearance="fill">
                                 <mat-label>Repetir contraseña</mat-label>
-                                <input type="password" matInput formControlName="repetir"
-                                    [ngClass]="{ 'is-invalid': enviarA && fA.repetir.errors }" />
-                                <div *ngIf="enviarA && fA.repetir.errors">
-                                    <div *ngIf="fA.repetir.errors.required">
-                                        Contraseña requerida
-                                    </div>
-                                    <div *ngIf="enviar && fA.repetir.errors.mustMatch">
-                                        No coinciden las contraseñas
-                                    </div>
-                                </div>
+                                <input type="password" matInput formControlName="repetir" />
+                                <mat-error *ngIf="fA.repetir.hasError('required')">
+                                    Campo requerido
+                                </mat-error>
+                                <mat-error *ngIf="fA.repetir.hasError('mustMatch')">
+                                    No coinciden las contraseñas
+                                </mat-error>
                             </mat-form-field>
                             <div class="btns">
                                 <input type="submit" value="Enviar" class="btn" />
@@ -138,75 +121,61 @@
     <mat-tab label="Agregar Usuarios">
         <div class="form">
             <h2>Agregue los datos del usuario</h2>
-            <form (ngSubmit)="registrar()" #form="ngForm" [formGroup]="formulario" id="formularioRegistro">
+            <form (ngSubmit)="registrar(formularioRegistro)" [formGroup]="formulario" #formularioRegistro="ngForm">
                 <mat-form-field appearance="fill">
                     <mat-label>Nombres</mat-label>
                     <input matInput formControlName="nombres"
                         [ngClass]="{ 'is-invalid': enviar && f.nombres.errors }" />
-                    <div *ngIf="enviar && f.nombres.errors">
-                        <div *ngIf="f.nombres.errors.required">Usuario requerido</div>
-                    </div>
+                    <mat-error *ngIf="f.nombres.errors"> Campo requerido </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Apellidos</mat-label>
-                    <input matInput formControlName="apellidos"
-                        [ngClass]="{ 'is-invalid': enviar && f.apellidos.errors }" />
-                    <div *ngIf="enviar && f.apellidos.errors">
-                        <div *ngIf="f.apellidos.errors.required">Usuario requerido</div>
-                    </div>
+                    <input matInput formControlName="apellidos" />
+                    <mat-error *ngIf="f.apellidos.errors"> Campo requerido </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Cedula</mat-label>
-                    <input matInput formControlName="cedula" [ngClass]="{ 'is-invalid': enviar && f.cedula.errors }" />
-                    <div *ngIf="enviar && f.cedula.errors">
-                        <div *ngIf="f.cedula.errors.required">Usuario requerido</div>
-                    </div>
+                    <input matInput formControlName="cedula" />
+                    <mat-error *ngIf="f.cedula.errors"> Campo requerido </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Rol</mat-label>
-                    <mat-select formControlName="rol" [ngClass]="{ 'is-invalid': enviar && f.rol.errors }">
+                    <mat-select formControlName="rol">
                         <mat-option *ngFor="let rol of roles" [value]="rol.value">
                             {{ rol.viewValue }}
                         </mat-option>
                     </mat-select>
-                    <div *ngIf="enviar && f.rol.errors">
-                        <div *ngIf="f.rol.errors.required">El rol es necesario</div>
-                    </div>
+                    <mat-error *ngIf="f.rol.errors"> Campo requerido </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Usuario</mat-label>
-                    <input matInput formControlName="usuario"
-                        [ngClass]="{ 'is-invalid': enviar && f.usuario.errors }" />
-                    <div *ngIf="enviar && f.usuario.errors">
-                        <div *ngIf="f.usuario.errors.required">Usuario requerido</div>
-                    </div>
+                    <input matInput formControlName="usuario" />
+                    <mat-error *ngIf="f.usuario.errors"> Campo requerido </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Contraseña</mat-label>
-                    <input type="password" matInput formControlName="contrasenia"
-                        [ngClass]="{ 'is-invalid': enviar && f.contrasenia.errors }" />
-                    <div *ngIf="enviar && f.contrasenia.errors">
-                        <div *ngIf="f.contrasenia.errors.required">
-                            Contraseña requerida
-                        </div>
-                        <div *ngIf="f.contrasenia.errors.minlength">
-                            La contraseña es muy corta
-                        </div>
-                    </div>
+                    <input type="password" matInput formControlName="contrasenia" />
+                    <mat-error *ngIf="f.contrasenia.hasError('required')">
+                        Campo requerido
+                    </mat-error>
+                    <mat-error *ngIf="f.contrasenia.hasError('minlength')">
+                        Minimo 5 caracteres
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                     <mat-label>Repetir contraseña</mat-label>
-                    <input type="password" matInput formControlName="repetir"
-                        [ngClass]="{ 'is-invalid': enviar && f.repetir.errors }" />
-                    <div *ngIf="enviar && f.repetir.errors">
-                        <div *ngIf="f.repetir.errors.required">Contraseña requerida</div>
-                        <div *ngIf="enviar && f.repetir.errors.mustMatch">
-                            No coinciden las contraseñas
-                        </div>
-                    </div>
+                    <input type="password" matInput formControlName="repetir" />
+                    <mat-error *ngIf="f.repetir.hasError('required')">
+                        Campo requerido
+                    </mat-error>
+                    <mat-error *ngIf="f.repetir.hasError('mustMatch')">
+                        No coinciden las contraseñas
+                    </mat-error>
                 </mat-form-field>
-                <input type="submit" value="Enviar" class="btn" />
-                <input type="reset" value="Cancelar" class="btn" (click)="resetear()" />
+                    <div class="botones">
+                        <input type="submit" value="Enviar" class="btn" />
+                        <input type="reset" value="Cancelar" class="btn" />
+                    </div>
             </form>
         </div>
     </mat-tab>
@@ -221,7 +190,8 @@
                                 Estado: {{ proyecto.estado }}
                             </mat-panel-title>
                             <mat-panel-description class="fechas">
-                                Fecha de Inicio: {{ proyecto.fechaDeInicio | date: "dd/MM/yyyy" }}
+                                Fecha de Inicio:
+                                {{ proyecto.fechaDeInicio | date: "dd/MM/yyyy" }}
                                 <mat-icon>date_range</mat-icon>
                                 Fecha de Fin: {{ proyecto.fechaDeFin | date: "dd/MM/yyyy" }}
                                 <mat-icon>event</mat-icon>
@@ -251,4 +221,6 @@
         </mat-accordion>
     </mat-tab>
 </mat-tab-group>
-<div *ngIf="!administrador">No deberia estar aquí</div>
+<div *ngIf="cargando" class="cargando">
+    <mat-spinner></mat-spinner>
+</div>

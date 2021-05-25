@@ -4,12 +4,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ScrumService } from 'src/app/servicios/scrum.service';
 import Swal from 'sweetalert2';
 import { EquipoService } from 'src/app/servicios/equipo.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-scrum',
   templateUrl: './scrum.component.html',
   styleUrls: ['./scrum.component.css'],
 })
 export class ScrumComponent implements OnInit {
+  cargando = false;
   scrum = false;
   formulario!: FormGroup;
   formEquipo!: FormGroup;
@@ -29,13 +31,17 @@ export class ScrumComponent implements OnInit {
     private usuario: UsuarioService,
     private usuarioScrum: ScrumService,
     private equipo: EquipoService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {}
   ngOnInit(): void {
     this.usuario.informacion().subscribe(
       (res) => {
         if (res.rol == 'Scrum Master') {
           this.scrum = true;
+          this.cargando = false;
+        } else {
+          this.router.navigate(['/Oops']);
         }
       },
       (err) => {
@@ -91,7 +97,7 @@ export class ScrumComponent implements OnInit {
   get p() {
     return this.formSprintProyecto.controls;
   }
-  crearProyecto() {
+  crearProyecto(formularioProyecto: any) {
     this.enviar = true;
     if (this.formulario.invalid) return;
     this.usuarioScrum.crearProyectos(this.formulario.value).subscribe(
@@ -101,13 +107,21 @@ export class ScrumComponent implements OnInit {
           'En la lista de los proyectos puede agregar los usuarios',
           'success'
         ).then((result) => {
-          location.reload();
+          formularioProyecto.resetForm();
+          this.usuarioScrum.listarProyectos().subscribe(
+            (res) => {
+              this.listaProyecto = res;
+            },
+            (err) => {
+              Swal.fire('Hubo un problema', `${err.error}`, 'error');
+            }
+          );
         });
       },
       (err) => console.log('Hubo un problema', err.error)
     );
   }
-  agregarUsuario(id: any) {
+  agregarUsuario(id: any, formularioEquipo: any) {
     this.enviarE = true;
     this.formEquipo.value.idProyecto = id;
     if (this.formEquipo.invalid) return;
@@ -118,6 +132,7 @@ export class ScrumComponent implements OnInit {
           'El usuario ya pertenece al equipo del proyecto',
           'success'
         );
+        formularioEquipo.resetForm();
       },
       (err) => {
         Swal.fire('Hubo un problema', `${err.error}`, 'error');
@@ -156,6 +171,7 @@ export class ScrumComponent implements OnInit {
       (res) => {
         this.listaSprint = res;
       },
+
       (err) => {
         Swal.fire('Hubo un problema', `${err.error}`, 'error');
       }
@@ -164,7 +180,7 @@ export class ScrumComponent implements OnInit {
   cerrarModalSprint() {
     document.getElementById('modalSprint')!.className = 'modalSprint invisible';
   }
-  agregarSprint(id: any) {
+  agregarSprint(id: any, formularioSprint: any) {
     this.enviarS = true;
     this.formSprint.value.idProyecto = id;
     if (this.formSprint.invalid) return;
@@ -175,6 +191,7 @@ export class ScrumComponent implements OnInit {
           'El Sprint ha sido agregado al proyecto con éxito',
           'success'
         );
+        formularioSprint.resetForm();
       },
       (err) => {
         Swal.fire('Hubo un problema', `${err.error}`, 'error');

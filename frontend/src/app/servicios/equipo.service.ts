@@ -9,7 +9,11 @@ export class EquipoService {
   private listarEquipoUrl = "http://localhost:3000/scrum/equipo/listar";
   private eliminarEquipoUrl = "http://localhost:3000/scrum/equipo/borrar";
   private listarProyectosUrl = "http://localhost:3000/scrum/equipo/listarProyectos";
-  private listarSprintUrl = 'http://localhost:3000/scrum/sprint/listar';
+  private listarSprintUrl = "http://localhost:3000/scrum/sprint/listar";
+  private crearActividadUrl = "http://localhost:3000/scrum/actividad/crear";
+  private listarActividadesSprintUrl = "http://localhost:3000/scrum/actividad/listar";
+  private actualizarActividadesUrl = "http://localhost:3000/scrum/actividad/actualizar";
+  private eliminarActidadesUrl = "http://localhost:3000/scrum/actividad/borrar"; 
   constructor(private Http: HttpClient) { }
   listarUsuarios(){
     return this.Http.get<any>(this.listarUsuariosUrl)
@@ -33,5 +37,20 @@ export class EquipoService {
     const url =  `${this.listarSprintUrl}/${id}`;
     return this.Http.get<any>(url);
   }
+  crearActividad(actividad:any){
+    return this.Http.post<any>(this.crearActividadUrl,actividad);
+  }
+  listarActividadesSprint(id:any){
+    const url= `${this.listarActividadesSprintUrl}/${id}`
+    return this.Http.get<any>(url);
+  }
+  actualizarActividades(tarea:Object){
+    return this.Http.put<any>(this.actualizarActividadesUrl,tarea)
+  }
+  eliminarActividades(id:string){
+    const url = `${this.eliminarActidadesUrl}/${id}`;
+    return this.Http.delete<any>(url);
+  }
+  
   
 }

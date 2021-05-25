@@ -9,6 +9,8 @@ import { LoginComponent } from './login/login/login.component';
 import { AdministradorComponent } from './administrador/administrador/administrador.component';
 import { ScrumComponent } from './scrum/scrum/scrum.component';
 import { EquipoComponent } from './equipo/equipo/equipo.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+
 //Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +20,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTreeModule } from '@angular/material/tree';
+
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //Http
 import { HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
@@ -28,7 +34,7 @@ import { FormsModule } from '@angular/forms';
 //Servicios
 import { TokenInterceptorService } from './servicios/token-interceptor.service';
 @NgModule({
-  declarations: [AppComponent, MenuComponent, LoginComponent, AdministradorComponent, InicioComponent, ScrumComponent, EquipoComponent],
+  declarations: [AppComponent, MenuComponent, LoginComponent, AdministradorComponent, InicioComponent, ScrumComponent, EquipoComponent, NotFoundComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -40,6 +46,8 @@ import { TokenInterceptorService } from './servicios/token-interceptor.service';
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTreeModule,
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
