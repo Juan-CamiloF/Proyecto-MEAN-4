@@ -31,3 +31,15 @@ form{
     background: rgb(62, 95, 138);
     color: #fff;
 }
+.botones{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+.cargando{
+    height: 80vh; 
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

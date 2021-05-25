@@ -38,73 +38,219 @@
             </div>
         </mat-accordion>
     </mat-tab>
-    <mat-tab label="Second"> Content 2 </mat-tab>
+    <mat-tab label="Listar Actividades">
+        <h3>Lista de actividades por Sprint</h3>
+        <div class="dobleFormulario">
+            <div>
+                <h3>Escoger un proyecto</h3>
+                <form (ngSubmit)="sprintsParaListarTareas()" [formGroup]="proyecto" class="formularioEquipo">
+                    <mat-form-field appearance="fill" class="campo">
+                        <mat-label>Escoger el proyecto</mat-label>
+                        <mat-select formControlName="idProyecto">
+                            <mat-option>-----</mat-option>
+                            <mat-option *ngFor="let proyectos of listaProyectos" [value]="proyectos._id">
+                                {{ proyectos.nombre }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="p.idProyecto.errors">Seleccione un proyecto</mat-error>
+                    </mat-form-field>
+                    <div class="botones">
+                        <input class="btn" type="submit" value="Aceptar" />
+                        <input class="btn" type="reset" value="Cancelar" />
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="listaSprintParaListarTareas.length">
+                <h3>Escoger un Sprint</h3>
+                <form (ngSubmit)="listarTareas()" [formGroup]="sprint" class="formularioEquipo">
+                    <mat-form-field appearance="fill" class="campo">
+                        <mat-label>Escoger el sprint</mat-label>
+                        <mat-select formControlName="idSprint">
+                            <mat-option>-----</mat-option>
+                            <mat-option *ngFor="let sprint of listaSprintParaListarTareas" [value]="sprint._id">
+                                {{ sprint.nombre }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="s.idSprint.errors">Seleccione un Sprint</mat-error>
+                    </mat-form-field>
+                   <div class="botones">
+                        <input class="btn" type="submit" value="Aceptar"/>
+                        <input type="reset" class="btn" value="Cancelar">
+                   </div>
+                </form>
+            </div>
+        </div>
+        <mat-accordion>
+            <div *ngIf="listaTareas.length">
+                <div *ngFor="let tarea of listaTareas">
+                    <mat-expansion-panel class="panel">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="titulo">Nombre: {{ tarea.nombre }}
+                            </mat-panel-title>
+                            <mat-panel-description *ngIf="tarea.prioridad == 'Alta'" class="header">
+                                <div class="rojo elemento">
+                                    Prioridad: {{ tarea.prioridad }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Asignada'" class="azul elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Iniciada'" class="amarillo elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Terminada'" class="verde elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                            </mat-panel-description>
+                            <mat-panel-description *ngIf="tarea.prioridad == 'Media'" class="header">
+                                <div class="amarillo elemento">
+                                    Prioridad: {{ tarea.prioridad }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Asignada'" class="azul elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Iniciada'" class="amarillo elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Terminada'" class="verde elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                            </mat-panel-description>
+                            <mat-panel-description *ngIf="tarea.prioridad == 'Baja'" class="header">
+                                <div class="azul elemento">
+                                    Prioridad: {{ tarea.prioridad }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Asignada'" class="azul elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Iniciada'" class="amarillo elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                                <div *ngIf="tarea.estado == 'Terminada'" class="verde elemento">
+                                    Estado: {{ tarea.estado }}
+                                </div>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <p>Descripción: {{ tarea.descripcion }}</p>
+                        <div class="Estados">
+                            <h4>Cambiar de estado</h4>
+                            <div class="btns">
+                                <button class="azul boton" (click)="actualizarEstado(tarea, 'Asignada')">
+                                    Asignada
+                                </button>
+                                <button class="amarillo boton" (click)="actualizarEstado(tarea, 'Iniciada')">
+                                    Iniciada
+                                </button>
+                                <button class="verde boton" (click)="actualizarEstado(tarea, 'Terminada')">
+                                    Terminado
+                                </button>
+                            </div>
+                        </div>
+                        <h4>Otras opciones</h4>
+                        <div class="btns">
+                            <span class="material-icons" (click)="abrirModal(tarea)">
+                                create
+                            </span>
+                            <span class="material-icons" (click)="eliminar(tarea)">
+                                delete_forever
+                            </span>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+                <div class="formulario Invisible" id="form">
+                    <div class="contenedor">
+                        <h3>Crear tarea</h3>
+                        <form (ngSubmit)="actualizarTarea()" [formGroup]="actualizar" >
+                            <mat-form-field appearance="fill">
+                                <mat-label>Nombre de la tarea</mat-label>
+                                <input matInput formControlName="nombre" />
+                                <mat-error *ngIf="f.nombre.errors"> Campo requerido </mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Prioridad</mat-label>
+                                <mat-select formControlName="prioridad">
+                                    <mat-option value="Alta">Alta</mat-option>
+                                    <mat-option value="Media">Media</mat-option>
+                                    <mat-option value="Baja">Baja</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="f.prioridad.errors">Campo requerido</mat-error>
+                            </mat-form-field>
+                            <div class="textArea">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Descripción</mat-label>
+                                    <textarea matInput formControlName="descripcion"> </textarea>
+                                    <mat-error *ngIf="f.descripcion.errors">
+                                        Campo requerido
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <input type="submit" value="Actualizar" class="btn actualizar" />
+                        </form>
+                        <button class="btn cerrar" (click)="cerrarModal()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </mat-accordion>
+    </mat-tab>
     <mat-tab label="Crear actividad">
         <div class="form">
             <h3>Escoger un proyecto</h3>
-            <form (ngSubmit)="sprints()" [formGroup]="proyecto">
+            <form (ngSubmit)="sprintsParaCrearTareas()" [formGroup]="proyecto" #formularioProyecto="ngForm" >
                 <mat-form-field appearance="fill">
                     <mat-label>Escoger el proyecto</mat-label>
-                    <mat-select formControlName="idProyecto"
-                        [ngClass]="{'is-invalid':enviarProyecto && p.idProyecto.errors}">
+                    <mat-select formControlName="idProyecto">
                         <mat-option *ngFor="let proyectos of listaProyectos" [value]="proyectos._id">
                             {{ proyectos.nombre }}
                         </mat-option>
                     </mat-select>
                     <mat-error *ngIf="p.idProyecto.errors">Seleccione un proyecto</mat-error>
                 </mat-form-field>
-                <input class="btn" type="submit" value="Aceptar">
+                <input class="btn" type="submit" value="Aceptar" />
             </form>
         </div>
-        <div class="form" *ngIf="listaSprint.length">
-            <div class="form">
-                <h3>Crear tarea</h3>
-                <form (ngSubmit)="crearTarea()" [formGroup]="formulario">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Escoger un sprint</mat-label>
-                        <mat-select formControlName="idSprint"
-                            [ngClass]="{'is-invalid':enviarTarea && f.idSprint.errors}">
-                            <mat-option *ngFor="let sprints of listaSprint" [value]="sprints._id">
-                                {{ sprints.nombre }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f.idSprint.errors">Seleccione un proyecto</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Nombre de la tarea</mat-label>
-                        <input matInput formGroupName="nombre"
-                            [ngClass]="{'is-invalid':enviarTarea && f.nombre.errors}">
-                        <div *ngIf="enviarTarea && f.nombre.errors">
-                            <div *ngIf="f.nombre.errors.required">
-                                El campo es requerido
-                            </div>
-                        </div>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Prioridad</mat-label>
-                        <mat-select formControlName="prioridad"
-                            [ngClass]="{'is-invalid':enviarTarea && f.prioridad.errors}">
-                            <mat-option value="Alta">Alta</mat-option>
-                            <mat-option value="Media">Media</mat-option>
-                            <mat-option value="Baja">Baja</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f.prioridad.errors">Seleccione una prioridad</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Descripción</mat-label>
-                        <textarea matInput formGroupName="descripcion"
-                            [ngClass]="{'is-invalid':enviarTarea && f.descripcion.errors}">
-                        </textarea>
-                        <div *ngIf="enviarTarea && f.descripcion.errors">
-                            <div *ngIf="f.descripcion.errors.required">
-                                El campo es requerido
-                            </div>
-                        </div>
-                    </mat-form-field>
-
-                    <input type="submit" value="Crear" class="btn">
-                </form>
+        <div class="form" *ngIf="listaSprintParaCrearTareas.length">
+            <h3>Crear tarea</h3>
+            <form (ngSubmit)="crearTarea(formularioProyecto, formularioTarea)" [formGroup]="formulario"
+                #formularioTarea="ngForm">
+                <mat-form-field appearance="fill">
+                    <mat-label>Escoger un sprint</mat-label>
+                    <mat-select formControlName="idSprint">
+                        <mat-option *ngFor="let sprints of listaSprintParaCrearTareas" [value]="sprints._id">
+                            {{ sprints.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f.idSprint.errors">Campo requerido</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Nombre de la tarea</mat-label>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="f.nombre.errors"> Campo requerido </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Prioridad</mat-label>
+                    <mat-select formControlName="prioridad">
+                        <mat-option value="Alta">Alta</mat-option>
+                        <mat-option value="Media">Media</mat-option>
+                        <mat-option value="Baja">Baja</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f.prioridad.errors">Campo requerido</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Descripción</mat-label>
+                    <textarea matInput formControlName="descripcion"> </textarea>
+                    <mat-error *ngIf="f.descripcion.errors">
+                        Campo requerido
+                    </mat-error>
+                </mat-form-field>
+            <div class="botones">
+                <input type="submit" value="Crear" class="btn" />
+                <button class="btn" (click)="cancelarTarea(formularioProyecto, formularioTarea)">
+                    Cancelar
+                </button>
             </div>
+            </form>
         </div>
     </mat-tab>
 </mat-tab-group>
+<div *ngIf="cargando" class="cargando">
+    <mat-spinner></mat-spinner>
+</div>

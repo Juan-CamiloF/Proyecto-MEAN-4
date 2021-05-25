@@ -3,21 +3,17 @@
   <form (ngSubmit)="iniciar()" [formGroup]="formulario">
     <mat-form-field appearance="fill">
       <mat-label>Usuario</mat-label>
-      <input matInput formControlName="usuario" [ngClass]="{'is-invalid':enviar && f.usuario.errors}" />
-      <div *ngIf="enviar && f.usuario.errors">
-        <div *ngIf="f.usuario.errors.required">
-            Usuario requerido
-        </div>
-      </div>
+      <input matInput formControlName="usuario" />
+      <mat-error *ngIf="f.usuario.errors">
+        Usuario requerido
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Contraseña</mat-label>
-      <input type="password" matInput formControlName="contrasenia" [ngClass]="{'is-invalid':enviar && f.contrasenia.errors }" />
-      <div *ngIf="enviar && f.contrasenia.errors">
-        <div *ngIf="f.contrasenia.errors.required">
-            Contraseña requerida
-        </div>
-      </div>
+      <input type="password" matInput formControlName="contrasenia"/>
+      <mat-error *ngIf="f.contrasenia.errors">
+        Contraseña requerida
+      </mat-error>
     </mat-form-field>
     <input type="submit" value="Iniciar" class="btn">
   </form>

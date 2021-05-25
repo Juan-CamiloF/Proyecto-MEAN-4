@@ -4,6 +4,7 @@ const router = express.Router();
 //Modulos creados
 const { Proyecto } = require("../models/proyectos");
 const { Usuario } = require("../models/usuario");
+const { Sprint } = require("../models/sprints");
 const auth = require("../middleware/auth");
 //Rutas
 //Creación de proyectos
@@ -11,7 +12,7 @@ router.post("/crear", auth, async (request, response) => {
   //Buscar si existe el usuario
   const usuario = await Usuario.findById(request.usuario._id);
   if (!usuario) return response.status(400).send("El usuario no existe");
-  if (usuario.rol == "Scrum Master" || usuario.rol == "Lider técnico") {
+  if (usuario.rol == "Scrum Master") {
   const creador = usuario.nombres +' '+ usuario.apellidos + ' ('+usuario.rol+')'
     const proyecto = new Proyecto({
       idUsuario: usuario._id,
@@ -34,7 +35,7 @@ router.get("/listar", auth, async (request, response) => {
   //Si existe el usuario
   const usuario = await Usuario.findById(request.usuario._id);
   if (!usuario) return response.status(400).send("El usuario no existe");
-  if (usuario.rol == "Scrum Master" || usuario.rol == "Lider técnico") {
+  if (usuario.rol == "Scrum Master") {
     const proyecto = await Proyecto.find({
       idUsuario: request.usuario._id,
     }).sort({ fechaCreacion: 1 });
@@ -60,7 +61,7 @@ router.put("/actualizar", auth, async (request, response) => {
   //Si existe el usuario
   const usuario = await Usuario.findById(request.usuario._id);
   if (!usuario) return response.status(400).send("El usuario no existe");
-  if (usuario.rol == "Scrum Master" || usuario.rol == "Lider técnico") {
+  if (usuario.rol == "Scrum Master") {
     const proyecto = await Proyecto.findByIdAndUpdate(
       request.body._id,
       {
@@ -85,12 +86,14 @@ router.delete("/borrar/:_id", auth, async (request, response) => {
   //Si existe el usuario
   const usuario = await Usuario.findById(request.usuario._id);
   if (!usuario) return response.status(400).send("El usuario no existe");
-  if (usuario.rol == "Scrum Master" || usuario.rol == "Lider técnico") {
-    const result = await Proyecto.findByIdAndDelete(request.params._id);
-    if (!result) response.status(400).send("No existe el proyecto");
-    response.status(400).send({ message: "Proyecto eliminado" });
+  if (usuario.rol == "Scrum Master") {
+    const proyecto = await Proyecto.findByIdAndDelete(request.params._id);
+    if (!proyecto) response.status(400).send("No existe el proyecto");
+    const sprint = await Sprint.findOne({idProproyecto:proyecto._id});
+    if(sprint) response.status(400).send("El proyecto tiene sprint's en el proyecto");
+    response.status(200).send({ message: "Proyecto eliminado" });
   } else {
-    return response.status(400).send("No tiene los permisos necesarios");
+    return response.status(401).send("No tiene los permisos necesarios");
   }
 });
 module.exports = router;

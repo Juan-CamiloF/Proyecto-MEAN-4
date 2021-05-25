@@ -39,3 +39,127 @@
 .Invisible{
     display: none;
 }
+.dobleFormulario{
+  display: flex;
+  justify-content: center;
+}
+.campo{
+  width:250px;
+}
+h3{
+  text-align: center;
+  margin: 15px 0;
+}
+.titulo {
+  display: flex;
+  padding: 5px;
+}
+.panel {
+  margin: 15px 0;
+}
+.header {
+  padding: 5px 5px;
+  display: flex;
+  justify-content: flex-end;
+}
+.elemento {
+  margin: 0 25px;
+}
+.Estados{
+  margin: 15px 0;
+}
+.boton{
+  color: #000;
+  border: 1px solid #000;
+  cursor: pointer;
+  outline: none;
+}
+.boton:hover {
+  color: blue;
+}
+.rojo {
+  background: red;
+  margin: 0 5px;
+  padding: 5px 5px;
+  color: #fff;
+  border-radius: 5px;
+}
+.amarillo {
+  background: rgb(88, 231, 88);
+  margin: 0 5px;
+  padding: 5px 5px;
+  color: #fff;
+  border-radius: 5px;
+}
+.azul {
+  background: rgb(88, 145, 231);
+  margin: 0 5px;
+  padding: 5px 5px;
+  color: #fff;
+  border-radius: 5px;
+}
+.verde {
+  background: rgb(72, 167, 44);
+  margin: 0 5px;
+  padding: 5px 5px;
+  color: #fff;
+  border-radius: 5px;
+}
+span{
+  cursor: pointer;
+}
+span:hover{
+  color: blue;
+}
+.formulario {
+  background: rgba(0, 0, 0, 0.9);
+  color: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  transition: all 0.5s;
+}
+.contenedor{
+  width: 40%;
+  height: 60%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+}
+.contenedor > form{
+    width: 50%;
+    display: flex;
+    margin: 0 auto;
+}
+.contenedor > form > mat-form-field{
+    height: 80px;
+}
+.Invisible{
+  display: none;
+}
+.contenedor {
+  background: rgb(255, 255, 255);
+  border-radius: 5px;
+}
+.cerrar{
+  position:fixed;
+  top: 0;
+  left: 0;
+}
+
+.textArea>mat-form-field{
+  width: 100%;
+} 
+.actualizar{
+  margin: auto;
+  display:inline;
+}
+.formularioEquipo{
+  width: 90%;
+}

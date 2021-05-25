@@ -43,7 +43,7 @@ router.get("/usuarios", auth, async (request, response) => {
     const usuarios = await Usuario.find({
       $and: [
         { rol: { $nin: "Administrador" } },
-        { usuario: { $nin: usuario.usuario } },
+        { rol: { $nin: "Scrum Master"} },
       ],
     });
     response.status(200).send(usuarios);
